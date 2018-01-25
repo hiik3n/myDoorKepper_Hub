@@ -1,18 +1,19 @@
 import logging
+from .message_handler_interface import MessageHandlerInterface
 
 
-class IOMessageHandler(object):
+class IOMessageHandler(MessageHandlerInterface):
     messageCode = "IO_MSG"
 
     def __init__(self):
         self.logger = logging.getLogger()
-        self.connectorList = []
+        self.connector = None
 
     def process(self, message):
         return None
 
     def add_connector(self, connector):
-        self.connectorList.append(connector)
+        self.connector = connector
 
 
 if __name__ == "__main__":

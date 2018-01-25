@@ -6,7 +6,7 @@ import logging
 from config import *
 from myhub.my_connector import MqttConnector
 from myhub.my_queue import MyQueue
-from myhub.my_message_handler import MessageHandler
+from myhub.my_message_handler import MessageProcessor, IOMessageHandler, MqttMessageHandler, BleMessageHandler
 
 if __name__ == "__main__":
 
@@ -19,31 +19,40 @@ if __name__ == "__main__":
 
         logging.info("myHub-Main")
 
-        logging.debug("Initial instance Queues")
+        logging.debug("Initial Queues")
         receiveQueue = MyQueue()
         sendQueue = MyQueue()
 
-        logging.debug("Initial instance mqttConnector")
+        logging.debug("Initial mqttConnector")
         mqttCloudConn = MqttConnector(client_id=MQTT_CLIENTID, host=MQTT_HOST, port=MQTT_PORT,
                                       username=MQTT_USERNAME, password=MQTT_PASSWORD,
                                       ca_cert=MQTT_CACERT, tls_version=MQTT_TLSVERSION, crt_file=MQTT_CERT, key_file=MQTT_KEY)
         res = mqttCloudConn.connect()
         logging.debug("Connected to MQTT Broker (code=%s)" % res)
 
-        logging.debug("Initial instance MsgHandler")
-        MsgHandler = MessageHandler()
-        MsgHandler.add_connector(mqttCloudConn)
+        logging.debug("Initial MsgHandlers")
+        # Message processor
+        msgProcessor = MessageProcessor()
+        # Message handler for IO Message
+        ioMsgHandler = IOMessageHandler()
+        msgProcessor.add_handler(ioMsgHandler)
+        # Message handler for MQTT Message
+        mqttMsgHandler = MqttMessageHandler()
+        msgProcessor.add_handler(mqttMsgHandler)
+        # Message handler for BLE Message
+        bleMsgHandler = BleMessageHandler()
+        msgProcessor.add_handler(bleMsgHandler)
 
         while 1:
             logging.debug("Hi")
 
             # Handle received messages
             while not receiveQueue.is_empty():
-                MsgHandler.process(receiveQueue.get())
+                msgProcessor.process(receiveQueue.get())
 
             # Handle sent messages
             while not sendQueue.is_empty():
-                MsgHandler.process(sendQueue.get())
+                msgProcessor.process(sendQueue.get())
 
             time.sleep(30)
 

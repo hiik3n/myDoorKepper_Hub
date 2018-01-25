@@ -1,18 +1,21 @@
 import logging
 
 
-class MessageHandler(object):
+class MessageProcessor(object):
     messageCode = "ALL_MSG"
 
     def __init__(self):
         self.logger = logging.getLogger()
-        self.connectorList = []
+        self.handler = []
 
     def process(self, message):
+        for _handler in self.handler:
+            if _handler.process(message) is not None:
+                break
         return None
 
-    def add_connector(self, connector):
-        self.connectorList.append(connector)
+    def add_handler(self, handler):
+        self.handler.append(handler)
 
 
 if __name__ == "__main__":
