@@ -1,9 +1,8 @@
-
 class BleMessage(object):
-    messageCode = "BLE_MSG"
-
     def __init__(self, *args, **kwargs):
+        self.mac = kwargs['mac'] if 'mac' in kwargs.keys() else None
+        self.rssi = kwargs['rssi'] if 'rssi' in kwargs.keys() else None
         self.payload = kwargs['payload'] if 'payload' in kwargs.keys() else None
 
     def __repr__(self):
-        return "%s" % (self.payload)
+        return "mac=%s, rssi=%s, payload=%s" % (self.mac, self.rssi, repr(self.payload))
