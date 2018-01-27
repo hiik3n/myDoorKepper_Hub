@@ -1,8 +1,10 @@
 class IOMessage(object):
     messageCode = "IO_MSG"
+    SHT_MESSAGE = 'SHT'
 
     def __init__(self, *args, **kwargs):
+        self.type = kwargs['type'] if 'type' in kwargs.keys() else None
         self.payload = kwargs['payload'] if 'payload' in kwargs.keys() else None
 
     def __repr__(self):
-        return "%s" % (self.payload)
+        return "%s,%s" % (self.type, self.payload)

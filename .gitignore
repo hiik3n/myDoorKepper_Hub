@@ -2,7 +2,7 @@
 .DS_Store
 *.crt
 config_local.py
-myhub/my_connector/bluepy
+myhub/my_scanner/bluepy
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

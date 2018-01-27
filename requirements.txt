@@ -1,2 +1,4 @@
 paho-mqtt
 bluepy
+pi_sht1x
+RPi.GPIO

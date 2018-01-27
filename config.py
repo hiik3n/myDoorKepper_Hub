@@ -10,3 +10,7 @@ from config_local import *
 # MQTT_CLIENTID = "name"
 # MQTT_CERT = None
 # MQTT_KEY = None
+
+# # Hub Config
+# USE_BLE = False
+# USE_IO = False
