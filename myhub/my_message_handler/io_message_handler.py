@@ -1,6 +1,8 @@
 import logging
 from myhub.my_message_handler.message_handler_interface import MessageHandlerInterface
 from myhub.my_message import IOMessage
+from myhub.helper_functions import encode_json
+from myhub.my_connector import MqttConnectorInterface
 
 
 class IOMessageHandler(MessageHandlerInterface):
@@ -22,10 +24,17 @@ class IOMessageHandler(MessageHandlerInterface):
             try:
                 if message.type == IOMessage.SHT_MESSAGE:
                     _data = self._parse_sht_payload(message.payload)
+                    _payload = encode_json({'ts': message.ts,
+                                            'temperature': _data[0],
+                                            'humidity': _data[1]})
                     return self.connector.publish("sensor/hub01/knot02/sht",
-                                                  payload=("%s,%s" % (_data[0], _data[1])),
+                                                  payload=_payload,
                                                   qos=0,
                                                   retain=False)
+                    # return self.connector.publish("sensor/hub01/knot02/sht",
+                    #                               payload=("%s,%s" % (_data[0], _data[1])),
+                    #                               qos=0,
+                    #                               retain=False)
                 else:
                     self.logger.warning("Unknown IO Payload %s" % repr(e))
                     return False
@@ -60,7 +69,7 @@ if __name__ == "__main__":
                         format='%(asctime)s - %(module)s - %(threadName)s - %(levelname)s - %(message)s')
     logging.Formatter.converter = time.gmtime
 
-    msg =IOMessage(type=IOMessage.SHT_MESSAGE, payload='1,2')
+    msg =IOMessage(type=IOMessage.SHT_MESSAGE, payload='1,2', ts=1234567)
     handler = IOMessageHandler()
-    handler.add_connector('temp')
+    handler.add_connector(MqttConnectorInterface())
     logging.debug(handler.process(msg))

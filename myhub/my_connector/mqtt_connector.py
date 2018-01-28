@@ -1,9 +1,10 @@
 import logging
 import time
 import paho.mqtt.client as mqtt
+from myhub.my_connector import MqttConnectorInterface
 
 
-class MqttConnector(object):
+class MqttConnector(MqttConnectorInterface):
     def __init__(self, client_id=None, host='127.0.0.1', port=1883, ca_cert=None, tls_version=None,
                  crt_file=None, key_file=None, username=None, password=None, on_message_callback=None):
 

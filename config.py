@@ -12,5 +12,6 @@ from config_local import *
 # MQTT_KEY = None
 
 # # Hub Config
+# HUB_ID = 'hubxx'
 # USE_BLE = False
 # USE_IO = False

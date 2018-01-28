@@ -4,6 +4,7 @@ import time
 from myhub.my_message.ble_payload import BlePayload
 from myhub.my_message import BleMessage
 from bluepy.btle import Scanner, BTLEException
+from myhub.helper_functions import get_timestamp
 
 
 class BleScanner(object):
@@ -20,7 +21,8 @@ class BleScanner(object):
             if _dev.addr == mac_address:
                 _bcPkg = BleMessage(mac=_dev.addr,
                                     rssi=_dev.rssi,
-                                    payload=BlePayload(payload=_dev.getScanData()))
+                                    payload=BlePayload(payload=_dev.getScanData()),
+                                    ts=get_timestamp())
                 return _bcPkg
         return None
 

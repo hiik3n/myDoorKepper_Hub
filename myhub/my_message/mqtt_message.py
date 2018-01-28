@@ -6,6 +6,7 @@ class MqttMessage(object):
         self.topic = kwargs['topic'] if 'topic' in kwargs.keys() else None
         self.qos = kwargs['qos'] if 'qos' in kwargs.keys() else None
         self.payload = kwargs['payload'] if 'payload' in kwargs.keys() else None
+        self.ts = kwargs['ts'] if 'ts' in kwargs.keys() else None
 
     def __repr__(self):
-        return "%s-%s-%s-%s" % (self.mid, self.topic, self.qos, self.payload)
+        return "%s-%s-%s-%s-%s" % (self.mid, self.topic, self.qos, self.payload, self.ts)

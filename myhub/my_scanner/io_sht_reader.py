@@ -2,6 +2,7 @@ import logging
 import time
 import RPi.GPIO as GPIO
 from pi_sht1x import SHT1x
+from myhub.helper_functions import get_timestamp
 
 from myhub.my_message import IOMessage
 
@@ -21,7 +22,7 @@ class IoPiShtReader(object):
             humidity = self.reader.read_humidity(temp)
 
             if (temp is not None) and (humidity is not None):
-                return IOMessage(type=IOMessage.SHT_MESSAGE, payload='%s,%s' % (temp, humidity))
+                return IOMessage(type=IOMessage.SHT_MESSAGE, payload='%s,%s' % (temp, humidity), ts=get_timestamp())
             else:
                 self.logger.warning('Failed to read sht data %s %s' % (temp, humidity))
                 return None
