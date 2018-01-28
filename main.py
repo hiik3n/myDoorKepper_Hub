@@ -52,6 +52,8 @@ if __name__ == "__main__":
                         _bleMsg = scanner.scan_beacon(_beaconAddr)
                         if _bleMsg is not None:
                             logging.debug("get %s from %s" % (_beaconAddr, str(_bleMsg)))
+                            _bleMsg.sender = 'knot1'
+                            _bleMsg.recipient = 'hub2'
                             queue.put(_bleMsg)
                         time.sleep(10)
 
@@ -86,6 +88,8 @@ if __name__ == "__main__":
                         _sensorData = reader.read_sht1x()
                         if _sensorData is not None:
                             logging.debug("GET %s" % repr(_sensorData))
+                            _sensorData.sender = 'knot2'
+                            _sensorData.recipient = 'hub1'
                             queue.put(_sensorData)
                         time.sleep(IO_PI_SHT_READ_PERIOD_SECOND)
 

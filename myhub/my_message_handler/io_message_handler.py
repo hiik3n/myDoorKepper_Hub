@@ -27,7 +27,9 @@ class IOMessageHandler(MessageHandlerInterface):
                     _payload = encode_json({'ts': message.ts,
                                             'temperature': _data[0],
                                             'humidity': _data[1]})
-                    return self.connector.publish("sensor/hub01/knot02/sht",
+                    return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
+                                                                       message.sender,
+                                                                       IOMessage.SHT_MESSAGE),
                                                   payload=_payload,
                                                   qos=0,
                                                   retain=False)
@@ -59,7 +61,7 @@ class IOMessageHandler(MessageHandlerInterface):
 
             return _payloadSplited
         except KeyError as e:
-            self.logger.warning("ble payload error (int(%s, 16)) %s" % (payload_str[4:6], payload_str))
+            self.logger.warning("ble payload error (int(%s, 16)) %s" % (payload[4:6], payload))
             return False
 
 
@@ -69,7 +71,7 @@ if __name__ == "__main__":
                         format='%(asctime)s - %(module)s - %(threadName)s - %(levelname)s - %(message)s')
     logging.Formatter.converter = time.gmtime
 
-    msg =IOMessage(type=IOMessage.SHT_MESSAGE, payload='1,2', ts=1234567)
+    msg =IOMessage(type=IOMessage.SHT_MESSAGE, payload='1,2', ts=1234567, sender='abc', recipient='def')
     handler = IOMessageHandler()
     handler.add_connector(MqttConnectorInterface())
     logging.debug(handler.process(msg))

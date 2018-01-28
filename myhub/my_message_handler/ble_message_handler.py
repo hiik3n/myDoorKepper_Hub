@@ -29,7 +29,9 @@ class BleMessageHandler(MessageHandlerInterface):
                 _payload = encode_json({'ts': message.ts,
                                         'temperature': _data})
 
-                return self.connector.publish("sensor/hub02/knot02/lm35",
+                return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
+                                                                   message.sender,
+                                                                   'lm35'),
                                               payload=_payload,
                                               qos=0,
                                               retain=False)
@@ -67,6 +69,8 @@ if __name__ == "__main__":
     bcPkg = BleMessage(mac="abc",
                        rssi=-53,
                        ts=123456789,
+                       sender='abc',
+                       recipient='def',
                        payload=BlePayload(payload=[('1', 'Complete 16b Services', '00aa'),
                                                    ('1', 'Complete Local Name', 'GAPButton\x00'),
                                                    ('1', '16b Service Data', '00aa19'),
