@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.getcwd(), 'myhub'))
 import time
 import logging
 import threading
+import traceback
 from config import *
 from myhub.my_connector import MqttConnector
 from myhub.my_queue import MyQueue
@@ -46,14 +47,15 @@ if __name__ == "__main__":
 
             def ble_scan_worker(scanner, queue):
                 """thread worker function"""
+                _knot_id = 'knot01'
                 _beaconAddr = "d6:cd:c3:a9:00:85"
                 while 1:
                     try:
                         _bleMsg = scanner.scan_beacon(_beaconAddr)
                         if _bleMsg is not None:
                             logging.debug("get %s from %s" % (_beaconAddr, str(_bleMsg)))
-                            _bleMsg.sender = 'knot1'
-                            _bleMsg.recipient = 'hub2'
+                            _bleMsg.sender = _knot_id
+                            _bleMsg.recipient = HUB_ID
                             queue.put(_bleMsg)
                         time.sleep(10)
 
@@ -85,11 +87,12 @@ if __name__ == "__main__":
             def io_pi_sht_reader(reader, queue):
                 while 1:
                     try:
+                        _knotId = 'knot01'
                         _sensorData = reader.read_sht1x()
                         if _sensorData is not None:
                             logging.debug("GET %s" % repr(_sensorData))
-                            _sensorData.sender = 'knot2'
-                            _sensorData.recipient = 'hub1'
+                            _sensorData.sender = _knotId
+                            _sensorData.recipient = HUB_ID
                             queue.put(_sensorData)
                         time.sleep(IO_PI_SHT_READ_PERIOD_SECOND)
 
@@ -126,5 +129,5 @@ if __name__ == "__main__":
             time.sleep(30)
 
     except Exception as e:
-        logging.error("Exception %s" % repr(e))
+        logging.error("Exception %s" % repr(traceback.print_exc()))
         exit(1)

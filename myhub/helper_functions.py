@@ -3,7 +3,7 @@ import json
 
 
 def get_timestamp():
-    return round(time.time())
+    return time.time()*1000
 
 
 def encode_json(item):
