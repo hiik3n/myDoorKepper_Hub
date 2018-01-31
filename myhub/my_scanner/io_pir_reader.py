@@ -6,8 +6,6 @@ from myhub.helper_functions import get_timestamp
 from myhub.my_message import IOMessage
 
 DATA_PIN = 24
-PIR_PERIOD = 60
-PIR_WAIT = 0.2
 
 
 class IoPiPirReader(object):
