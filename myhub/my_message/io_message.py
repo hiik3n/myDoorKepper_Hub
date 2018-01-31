@@ -1,6 +1,8 @@
 class IOMessage(object):
     messageCode = "IO_MSG"
     SHT_MESSAGE = 'SHT'
+    PIR_MESSAGE = 'PIR'
+    CONTACT_MESSAGE = 'CONTACT'
 
     def __init__(self, *args, **kwargs):
         self.type = kwargs['type'] if 'type' in kwargs.keys() else None

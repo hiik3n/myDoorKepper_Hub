@@ -33,12 +33,26 @@ class IOMessageHandler(MessageHandlerInterface):
                                                   payload=_payload,
                                                   qos=0,
                                                   retain=False)
-                    # return self.connector.publish("sensor/hub01/knot02/sht",
-                    #                               payload=("%s,%s" % (_data[0], _data[1])),
-                    #                               qos=0,
-                    #                               retain=False)
+                elif message.type == IOMessage.PIR_MESSAGE:
+                    _payload = encode_json({'ts': message.ts,
+                                            'pir': message.payload})
+                    return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
+                                                                       message.sender,
+                                                                       IOMessage.PIR_MESSAGE),
+                                                  payload=_payload,
+                                                  qos=0,
+                                                  retain=False)
+                elif message.type == IOMessage.CONTACT_MESSAGE:
+                    _payload = encode_json({'ts': message.ts,
+                                            'contact': message.payload})
+                    return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
+                                                                       message.sender,
+                                                                       IOMessage.CONTACT_MESSAGE),
+                                                  payload=_payload,
+                                                  qos=0,
+                                                  retain=False)
                 else:
-                    self.logger.warning("Unknown IO Payload %s" % repr(e))
+                    self.logger.warning("Unknown IO Payload %s" % repr(message))
                     return False
             except KeyError as e:
                 self.logger.warning("IO payload error %s" % repr(e))

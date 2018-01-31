@@ -14,7 +14,10 @@ class IoPiShtReader(object):
 
     def __init__(self):
         self.logger = logging.getLogger()
-        self.reader = SHT1x(DATA_PIN, SCK_PIN, gpio_mode=GPIO.BCM)
+        self.shtLogger = logging.getLogger('SHT1x')
+        self.shtLogger.setLevel(logging.WARNING)
+        self.reader = SHT1x(DATA_PIN, SCK_PIN, gpio_mode=GPIO.BCM,
+                            logger=self.shtLogger)
 
     def read_sht1x(self):
         try:
@@ -23,6 +26,7 @@ class IoPiShtReader(object):
 
             if (temp is not None) and (humidity is not None):
                 return IOMessage(type=IOMessage.SHT_MESSAGE, payload='%s,%s' % (temp, humidity), ts=get_timestamp())
+                pass
             else:
                 self.logger.warning('Failed to read sht data %s %s' % (temp, humidity))
                 return None
@@ -42,7 +46,7 @@ if __name__ == "__main__":
 
     while 1:
         try:
-            sensorData = IoPiShtReader.read_sht1x()
+            sensorData = bcScanner.read_sht1x()
             if sensorData is not None:
                 print("publish %s,%s" % sensorData)
             time.sleep(10)

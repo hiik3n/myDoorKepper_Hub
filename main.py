@@ -115,6 +115,76 @@ if __name__ == "__main__":
             logging.debug("Start thread to read io Pi Sht messages")
             ioShtReadThread.start()
 
+        if USE_PIR:
+            from myhub.my_message_handler import IOMessageHandler
+            from myhub.my_scanner import IoPiPirReader
+
+            def io_pi_pir_reader(reader, queue):
+                while 1:
+                    try:
+                        _knotId = 'knot01'
+                        # this line will take normally 60s
+                        _sensorData = reader.read_pir()
+                        if _sensorData is not None:
+                            logging.debug("GET %s" % repr(_sensorData))
+                            _sensorData.sender = _knotId
+                            _sensorData.recipient = HUB_ID
+                            queue.put(_sensorData)
+
+                    except Exception as e:
+                        logging.warning("Exception: %s, wait 30s" % e)
+                        time.sleep(30)
+
+            logging.debug("Initial IO Pi PIR Reader")
+            ioPiPirReader = IoPiPirReader()
+
+            # Message handler for IO Message
+            ioPirMsgHandler = IOMessageHandler()
+            ioPirMsgHandler.add_connector(mqttCloudConn)
+            msgProcessor.add_handler(ioPirMsgHandler)
+
+            # Start thread to read io PIR messages
+            ioPirReadThread = threading.Thread(name='io_pi_pir_reader', target=io_pi_pir_reader,
+                                               args=(ioPiPirReader, receiveQueue,))
+            ioPirReadThread.setDaemon(True)
+            logging.debug("Start thread to read io Pi PIR messages")
+            ioPirReadThread.start()
+
+        if USE_CONTACT:
+            from myhub.my_message_handler import IOMessageHandler
+            from myhub.my_scanner import IoPiContactReader
+
+            def io_pi_contact_reader(reader, queue):
+                while 1:
+                    try:
+                        _knotId = 'knot01'
+                        # this line will take normally 60s
+                        _sensorData = reader.read_contact()
+                        if _sensorData is not None:
+                            logging.debug("GET %s" % repr(_sensorData))
+                            _sensorData.sender = _knotId
+                            _sensorData.recipient = HUB_ID
+                            queue.put(_sensorData)
+
+                    except Exception as e:
+                        logging.warning("Exception: %s, wait 30s" % e)
+                        time.sleep(30)
+
+            logging.debug("Initial IO Pi Contact Reader")
+            ioPiContactReader = IoPiContactReader()
+
+            # Message handler for IO Message
+            ioContactMsgHandler = IOMessageHandler()
+            ioContactMsgHandler.add_connector(mqttCloudConn)
+            msgProcessor.add_handler(ioContactMsgHandler)
+
+            # Start thread to read io Contact messages
+            ioContactReadThread = threading.Thread(name='io_pi_contact_reader', target=io_pi_contact_reader,
+                                                   args=(ioPiContactReader, receiveQueue,))
+            ioContactReadThread.setDaemon(True)
+            logging.debug("Start thread to read io Pi Contact messages")
+            ioContactReadThread.start()
+
         while 1:
             logging.debug("Hi")
 

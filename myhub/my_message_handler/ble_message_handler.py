@@ -28,7 +28,7 @@ class BleMessageHandler(MessageHandlerInterface):
 
                 _payload = encode_json({'ts': message.ts,
                                         'temperature': _data})
-
+                self.logger.debug('payload %s' % str(_payload))
                 return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
                                                                    message.sender,
                                                                    'lm35'),
@@ -54,7 +54,7 @@ class BleMessageHandler(MessageHandlerInterface):
             self.logger.warning("ble payload error (len!=6) %s" % payload_str)
             return False
         try:
-            return int(payload_str[4:6], 16)
+            return int(payload_str[0:4], 16)/100
         except KeyError as e:
             self.logger.warning("ble payload error (int(%s, 16)) %s" % (payload_str[4:6], payload_str))
             return False
@@ -73,7 +73,7 @@ if __name__ == "__main__":
                        recipient='def',
                        payload=BlePayload(payload=[('1', 'Complete 16b Services', '00aa'),
                                                    ('1', 'Complete Local Name', 'GAPButton\x00'),
-                                                   ('1', '16b Service Data', '00aa19'),
+                                                   ('1', '16b Service Data', '0b451c'),
                                                    ('1', 'Flags', '06')]))
     handler = BleMessageHandler()
     handler.add_connector(MqttConnectorInterface())

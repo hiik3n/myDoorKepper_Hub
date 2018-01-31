@@ -15,3 +15,5 @@ from config_local import *
 # HUB_ID = 'hubxx'
 # USE_BLE = False
 # USE_IO = False
+# USE_PIR = False
+# USE_CONTACT = False
