@@ -6,6 +6,8 @@ from myhub.helper_functions import get_timestamp
 from myhub.my_message import IOMessage
 
 DATA_PIN = 25
+OPEN_STATE = 0
+CLOSE_STATE = 1
 
 
 class IoPiContactReader(object):
@@ -15,27 +17,39 @@ class IoPiContactReader(object):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(DATA_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-    def read_contact(self, contact_period=60, contact_wait=0.5):
+    def read_contact(self, period=0.5, wait=2, timeout=60):
         try:
-            # read data in 60 second, return the sum
-            _count = contact_period/contact_wait
-            _sum = 0
-            self.logger.debug('Reading...(%s)' % contact_period)
-            while _count > 0:
-                _state = GPIO.input(DATA_PIN)
-                if _state == 1:
-                    _sum += 1
-                elif _state == 0:
-                    pass
-                else:
-                    self.logger.warning('Failed to read contact data %s' % _state)
-                    return None
+            _curState = None
+            _counter = 0
+            _counterTimeOut = 0
+            while 1:
+                _newState = GPIO.input(DATA_PIN)
+                # self.logger.debug('READ contact %s' % _newState)
+                if (_newState == CLOSE_STATE) or (_newState == OPEN_STATE):
+                    # Initialize
+                    if _curState is None:
+                        _curState = _newState
 
-                # Decrease counter
-                _count -= 1
-                time.sleep(contact_wait)
-            # return _sum
-            return IOMessage(type=IOMessage.CONTACT_MESSAGE, payload='%s' % _sum, ts=get_timestamp())
+                    _counterTimeOut += 1
+                    if _curState == _newState:
+                        if _counterTimeOut > (timeout/period):
+                            return IOMessage(type=IOMessage.CONTACT_MESSAGE,
+                                             payload='%s' % (1 - _newState), ts=get_timestamp())
+                        else:
+                            _counter = 0
+                            time.sleep(period)
+                            continue
+                    else:
+                        if _counter > (wait/period):
+                            return IOMessage(type=IOMessage.CONTACT_MESSAGE,
+                                             payload='%s' % (1 - _newState), ts=get_timestamp())
+                        else:
+                            _counter += 1
+                            time.sleep(period)
+                            continue
+                else:
+                    self.logger.warning('Failed to read contact data %s' % _newState)
+                    return None
         except Exception as e:
             self.logger.warning(repr(e))
             return None

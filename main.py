@@ -158,7 +158,6 @@ if __name__ == "__main__":
                 while 1:
                     try:
                         _knotId = 'knot01'
-                        # this line will take normally 60s
                         _sensorData = reader.read_contact()
                         if _sensorData is not None:
                             logging.debug("GET %s" % repr(_sensorData))
@@ -167,8 +166,8 @@ if __name__ == "__main__":
                             queue.put(_sensorData)
 
                     except Exception as e:
-                        logging.warning("Exception: %s, wait 30s" % e)
-                        time.sleep(30)
+                        logging.warning("Exception: %s, wait some seconds" % e)
+                        time.sleep(15)
 
             logging.debug("Initial IO Pi Contact Reader")
             ioPiContactReader = IoPiContactReader()
@@ -186,7 +185,7 @@ if __name__ == "__main__":
             ioContactReadThread.start()
 
         while 1:
-            logging.debug("Hi")
+            # logging.debug("Hi")
 
             # Handle received messages
             while not receiveQueue.is_empty():
@@ -196,7 +195,7 @@ if __name__ == "__main__":
             while not sendQueue.is_empty():
                 msgProcessor.process(sendQueue.get())
 
-            time.sleep(30)
+            time.sleep(1)
 
     except Exception as e:
         logging.error("Exception %s" % repr(traceback.print_exc()))
