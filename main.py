@@ -48,15 +48,14 @@ if __name__ == "__main__":
             def ble_scan_worker(scanner, queue):
                 """thread worker function"""
                 _knot_id = 'knot01'
-                _beaconAddr = "d6:cd:c3:a9:00:85"
+                _beaconAddrs = ["d6:cd:c3:a9:00:85", "fe:8d:8e:65:e9:73", "cb:16:04:4a:10:56"]
                 while 1:
                     try:
-                        _bleMsg = scanner.scan_beacon(_beaconAddr)
-                        if _bleMsg is not None:
-                            logging.debug("get %s from %s" % (_beaconAddr, str(_bleMsg)))
-                            _bleMsg.sender = _knot_id
-                            _bleMsg.recipient = HUB_ID
-                            queue.put(_bleMsg)
+                        _bleMsgs = scanner.scan_beacon(_beaconAddrs)
+                        for _msg in _bleMsgs:
+                            _msg.sender = _knot_id
+                            _msg.recipient = HUB_ID
+                            queue.put(_msg)
                         time.sleep(10)
 
                     except BTLEException as e:
