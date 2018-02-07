@@ -45,7 +45,7 @@ class BleMessageHandler(MessageHandlerInterface):
                     self.logger.debug('payload %s' % str(_payload))
                     return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
                                                                        message.sender,
-                                                                       'lm35'),
+                                                                       'lm35ble'),
                                                   payload=_payload,
                                                   qos=0,
                                                   retain=False)
@@ -65,7 +65,7 @@ class BleMessageHandler(MessageHandlerInterface):
                     self.logger.debug('payload %s' % str(_payload))
                     return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
                                                                        message.sender,
-                                                                       'ntc10'),
+                                                                       'ntc10ble'),
                                                   payload=_payload,
                                                   qos=0,
                                                   retain=False)
