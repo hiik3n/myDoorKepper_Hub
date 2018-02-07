@@ -30,6 +30,7 @@ class BleMessageHandler(MessageHandlerInterface):
 
                 if _data[0] == '0001':
                     _payload = encode_json({'ts': message.ts,
+                                            'rssi': message.rssi,
                                             'battery_level': round(_data[1] * 3.6 / 1023, 2)})
                     self.logger.debug('payload %s' % str(_payload))
                     return self.connector.publish("battery/%s/%s" % (message.recipient,
@@ -39,6 +40,7 @@ class BleMessageHandler(MessageHandlerInterface):
                                                   retain=False)
                 elif _data[0] == '0002':
                     _payload = encode_json({'ts': message.ts,
+                                            'rssi': message.rssi,
                                             'temperature': round(_data[1] * 3.6 * 100 / 1023, 2)})
                     self.logger.debug('payload %s' % str(_payload))
                     return self.connector.publish("sensor/%s/%s/%s" % (message.recipient,
@@ -57,6 +59,7 @@ class BleMessageHandler(MessageHandlerInterface):
                     _ntcTempLow = NTC_10K_TEMPERATURE_REFERENCE_LIST[_listLen - _ntcIndex]
                     _ntcTemp = round(((_ntcOhm - _ntcOhmLow) / (_ntcOhmHigh - _ntcOhmLow) * (_ntcTempHigh - _ntcTempLow)) + _ntcTempLow, 2)
                     _payload = encode_json({'ts': message.ts,
+                                            'rssi': message.rssi,
                                             'temperature': _ntcTemp,
                                             'battery_level': round(_data[1] * 3.6 / 1023, 2)})
                     self.logger.debug('payload %s' % str(_payload))

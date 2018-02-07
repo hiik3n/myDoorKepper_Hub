@@ -47,13 +47,12 @@ if __name__ == "__main__":
 
             def ble_scan_worker(scanner, queue):
                 """thread worker function"""
-                _knot_id = 'knot01'
                 _beaconAddrs = ["d6:cd:c3:a9:00:85", "fe:8d:8e:65:e9:73", "cb:16:04:4a:10:56"]
                 while 1:
                     try:
                         _bleMsgs = scanner.scan_beacon(_beaconAddrs)
                         for _msg in _bleMsgs:
-                            _msg.sender = _knot_id
+                            _msg.sender = _msg.mac
                             _msg.recipient = HUB_ID
                             queue.put(_msg)
                         time.sleep(10)
