@@ -181,7 +181,7 @@ if __name__ == "__main__":
                           payload=BlePayload(payload=[('1', 'Complete 16b Services', '00aa'),
                                                       ('1', 'Complete Local Name', 'XXX\x00'),
                                                       #000400a400a600a700 0004038a01c9003e00
-                                                      ('1', '16b Service Data', '000400a400a600a700'),
+                                                      ('1', '16b Service Data', '0004038a01c9003e00'),
                                                       ('1', 'Manufacturer', '0002004a'),
                                                       ('1', 'Flags', '06')]))
 
